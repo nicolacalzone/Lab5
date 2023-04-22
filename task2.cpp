@@ -5,6 +5,7 @@
 using namespace cv;
 using namespace std;
 
+// GLOBAL
 struct ThStruct
 {
     Mat r1;
@@ -12,55 +13,12 @@ struct ThStruct
     Mat r3;
 };
 
-ThStruct methodByThresholding(Mat src)
-{
-    int thSky = 200;
+// FUNCTIONS
+ThStruct methodByKMeansClustering(int k, Mat src);
+ThStruct methodByThresholding(Mat src);
+void show(ThStruct res);
 
-    Mat mask1 = (src <= 130);
-    Mat mask2 = (src >= 60);
-    Mat maskAsphalt;
-    bitwise_and(mask1, mask2, maskAsphalt);
-    Mat maskSky = (src >= thSky);
-    Mat maskRest = ~(maskAsphalt | maskSky);
-
-    Mat region_asphalt, region_sky, region_else;
-    src.copyTo(region_asphalt, maskAsphalt);
-    src.copyTo(region_sky, maskSky);
-    src.copyTo(region_else, maskRest);
-
-    ThStruct res;
-    res.r1 = region_asphalt;
-    res.r2 = region_sky;
-    res.r3 = region_else;
-
-    return res;
-}
-
-ThStruct methodByKMeansClustering(int k, Mat src)
-{
-    TermCriteria criteria(TermCriteria::EPS + TermCriteria::COUNT, 10, 1.0);
-    Mat labels, centers;
-    kmeans(src, k, labels, criteria, 3, KMEANS_PP_CENTERS, centers);
-
-    labels = labels.reshape(1, src.rows);
-
-    Mat mask_asphalt = (labels == 0);
-    Mat mask_sky = (labels == 1);
-    Mat mask_else = (labels == 2);
-
-    Mat region_asphalt, region_sky, region_else;
-    src.copyTo(region_asphalt, mask_asphalt);
-    src.copyTo(region_sky, mask_sky);
-    src.copyTo(region_else, mask_else);
-
-    ThStruct res;
-    res.r1 = region_asphalt;
-    res.r2 = region_sky;
-    res.r3 = region_else;
-
-    return res;
-}
-
+// MAIN
 int main(int argc, char **argv)
 {
 
@@ -74,29 +32,73 @@ int main(int argc, char **argv)
         return -1;
     }
 
-    cvtColor(src, src_gray, COLOR_BGR2GRAY);
-
     Mat blurImg;
-    GaussianBlur(src_gray, blurImg, Size(5, 5), 0);
-    dilate(blurImg, blurImg, Mat::ones(3, 3, CV_8UC1), Point(-1, 1), 10);
+    GaussianBlur(src, blurImg, Size(5, 5), 0);
+    dilate(blurImg, blurImg, Mat::ones(3, 3, CV_8UC1), Point(-1, 1), 1);
 
-    // METHOD 1 --- THRESHOLDING
+    // METHOD 1 --- THRESHOLDING on GRAY Picture
     ThStruct res1 = methodByThresholding(blurImg);
-    imshow("Asphalt", res1.r1);
-    imshow("Sky", res1.r2);
-    imshow("Else", res1.r3);
-    waitKey(0);
+    show(res1);
 
-    // METHOD 2 --- KMEANS
-    int k = 3; // number of clusters
-    ThStruct res2 = methodByKMeansClustering(k, blurImg);
-
-    imshow("Asphalt", res2.r1);
-    imshow("Sky", res2.r2);
-    imshow("Else", res2.r3);
-    waitKey(0);
-
-    waitKey(0);
+    // METHOD 2 --- KMEANS on COLORED Picture
+    ThStruct res2 = methodByKMeansClustering(3, blurImg); // 3 is the number of clusters
+    show(res2);
 
     return 0;
+}
+
+ThStruct methodByThresholding(Mat src)
+{
+
+    cvtColor(src, src, COLOR_BGR2GRAY);
+
+    int thSky = 200;
+
+    Mat mask1 = (src <= 130);
+    Mat mask2 = (src >= 60);
+    Mat maskAsphalt;
+    bitwise_and(mask1, mask2, maskAsphalt);
+    Mat maskSky = (src >= thSky);
+    Mat maskRest = ~(maskAsphalt | maskSky);
+
+    ThStruct res;
+    src.copyTo(res.r1, maskAsphalt);
+    src.copyTo(res.r2, maskSky);
+    src.copyTo(res.r3, maskRest);
+
+    return res;
+}
+
+ThStruct methodByKMeansClustering(int k, Mat src)
+{
+    TermCriteria criteria(TermCriteria::EPS + TermCriteria::COUNT, 10, 1.0);
+    Mat labels, centers;
+    kmeans(src, k, labels, criteria, 3, KMEANS_PP_CENTERS, centers);
+
+    labels = labels.reshape(1, src.rows);
+
+    Mat maskAsphalt = (labels == 0);
+    Mat maskSky = (labels == 1);
+    Mat maskRest = (labels == 2);
+
+    ThStruct res;
+    src.copyTo(res.r1, maskAsphalt);
+    src.copyTo(res.r2, maskSky);
+    src.copyTo(res.r3, maskRest);
+
+    return res;
+}
+
+void show(ThStruct res)
+{
+    namedWindow("Asphalt", WINDOW_KEEPRATIO);
+    imshow("Asphalt", res.r1);
+
+    namedWindow("Sky", WINDOW_KEEPRATIO);
+    imshow("Sky", res.r2);
+
+    namedWindow("Else", WINDOW_KEEPRATIO);
+    imshow("Else", res.r3);
+
+    waitKey(0);
 }

@@ -5,25 +5,26 @@
 using namespace cv;
 using namespace std;
 
-enum condition
+struct Result
 {
-    crack,
-    noncrack
+    Mat morph;
+    Mat kernel;
 };
 
-Mat regionGrowingMethod(Mat morphImg, Mat blurImg);
+Result regionGrowingMethod(Mat morphImg, Mat blurImg, int minTh);
 Mat watershedMethod(Mat wsImg, Mat blurImg);
 Mat clusteringMethod(Mat clustImg, Mat blurImg);
 
 int main(int argc, char **argv)
 {
 
-    Mat src1, src2, src3;
-    Mat src1_gray, src2_gray, src3_gray;
+    Mat src1;
+    Mat srcGray;
+    Mat blurImg;
 
     string str1 = "../Asphalt-1.png";
     string str2 = "../Asphalt-2.png";
-    string str3 = "../Asphalt-3.png";
+    string str3 = "../Asphalt-3.png"; // this picture needs more iterations of gaussian blur filter
     vector<string> strings = {str1, str2, str3};
 
     for (string s : strings)
@@ -35,33 +36,70 @@ int main(int argc, char **argv)
             return -1;
         }
 
-        cvtColor(src1, src1_gray, COLOR_BGR2GRAY);
+        cvtColor(src1, srcGray, COLOR_BGR2GRAY);
 
-        Mat blurImg;
-        GaussianBlur(src1_gray, blurImg, Size(7, 7), 7);
+        if (s == str1)
+        {
+            GaussianBlur(srcGray, blurImg, Size(5, 5), 0);
 
-        // METODO 1 ---- REGION GROWING
-        Mat morphImg;
-        morphImg = regionGrowingMethod(morphImg, blurImg);
+            // METODO 1 ---- REGION GROWING
+            Result resGrowing;
+            resGrowing = regionGrowingMethod(resGrowing.morph, blurImg, 100);
+            namedWindow("res Regions", WINDOW_KEEPRATIO);
+            imshow("res Regions", resGrowing.morph);
+            resGrowing.morph.release();
+        }
+        else if (s == str2)
+        {
 
-        // METODO 2 ---- WATERSHED
+            // GaussianBlur(srcGray, blurImg, Size(3, 3), 0);
+            medianBlur(srcGray,
+                       blurImg,
+                       3);
 
-        imshow("res Regions", morphImg);
+            // GaussianBlur(blurImg, blurImg, Size(3, 3), 0);
+
+            // METODO 1 ---- REGION GROWING
+            Result resGrowing;
+            resGrowing = regionGrowingMethod(resGrowing.morph, blurImg, 90);
+            namedWindow("res Regions", WINDOW_KEEPRATIO);
+
+            dilate(resGrowing.morph, resGrowing.morph, resGrowing.kernel, Point(-1, 1), 1);
+
+            imshow("res Regions", resGrowing.morph);
+            resGrowing.morph.release();
+        }
+        else if (s == str3)
+        {
+            GaussianBlur(srcGray, blurImg, Size(3, 3), 0);
+
+            // METODO 1 ---- REGION GROWING
+            Result resGrowing;
+            resGrowing = regionGrowingMethod(resGrowing.morph, blurImg, 60);
+            namedWindow("res Regions", WINDOW_KEEPRATIO);
+            imshow("res Regions", resGrowing.morph);
+            resGrowing.morph.release();
+        }
+
         waitKey(0);
     }
 
     return 0;
 }
 
-Mat regionGrowingMethod(Mat morphImg, Mat blurImg)
+Result regionGrowingMethod(Mat morphImg, Mat blurImg, int minTh)
 {
+    Result res;
     Mat thImg;
-    threshold(blurImg, thImg, 40, 255, THRESH_BINARY); // the closest to black is the minTrhreshold,
-                                                       // the better the result
-    Mat kernel = getStructuringElement(MORPH_RECT, Size(3, 3));
-    morphologyEx(thImg, morphImg, MORPH_DILATE, kernel); // change the MORPH value and the pic changes!
+    threshold(blurImg, thImg, minTh, 255, THRESH_BINARY); // the closest to black is the minTrhreshold,
+                                                          // the better the result
+    Mat kernel = getStructuringElement(MORPH_RECT, Size(5, 5));
+    morphologyEx(thImg, morphImg, MORPH_CLOSE, kernel); // change the MORPH value and the pic changes!
 
-    return morphImg;
+    res.morph = morphImg.clone();
+    res.kernel = kernel.clone();
+
+    return res;
 }
 
 Mat watershedMethod(Mat wsImg, Mat blurImg)
