@@ -72,14 +72,22 @@ ThStruct methodByThresholding(Mat src)
 ThStruct methodByKMeansClustering(int k, Mat src)
 {
     TermCriteria criteria(TermCriteria::EPS + TermCriteria::COUNT, 10, 1.0);
-    Mat labels, centers;
+    Mat1f centers;
+    Mat labels;
+    src.convertTo(src, CV_32F);
     kmeans(src, k, labels, criteria, 3, KMEANS_PP_CENTERS, centers);
 
-    labels = labels.reshape(1, src.rows);
+    labels = labels.reshape(3, src.rows);
+    labels.convertTo(labels, CV_8U);
 
     Mat maskAsphalt = (labels == 0);
     Mat maskSky = (labels == 1);
     Mat maskRest = (labels == 2);
+
+    // reshape masks to have same size as src
+    maskAsphalt = maskAsphalt.reshape(src.rows, src.cols);
+    maskSky = maskSky.reshape(src.rows, src.cols);
+    maskRest = maskRest.reshape(src.rows, src.cols);
 
     ThStruct res;
     src.copyTo(res.r1, maskAsphalt);
