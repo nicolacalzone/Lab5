@@ -14,8 +14,8 @@ struct ThStruct
 };
 
 // FUNCTIONS
-ThStruct methodByKMeansClustering(int k, Mat src);
-ThStruct methodByThresholding(Mat src);
+ThStruct kmeansMethod(int k, Mat src);
+ThStruct thresholdMethod(Mat src);
 void show(ThStruct res);
 
 // MAIN
@@ -34,27 +34,27 @@ int main(int argc, char **argv)
 
     Mat blurImg;
     GaussianBlur(src, blurImg, Size(5, 5), 0);
-    dilate(blurImg, blurImg, Mat::ones(3, 3, CV_8UC1), Point(-1, 1), 1);
+    // dilate(blurImg, blurImg, Mat::ones(3, 3, CV_8UC1), Point(-1, 1), 1);
 
     // METHOD 1 --- THRESHOLDING on GRAY Picture
-    ThStruct res1 = methodByThresholding(blurImg);
+    ThStruct res1 = thresholdMethod(blurImg);
     show(res1);
 
     // METHOD 2 --- KMEANS on COLORED Picture
-    ThStruct res2 = methodByKMeansClustering(3, blurImg); // 3 is the number of clusters
+    ThStruct res2 = kmeansMethod(3, blurImg); // 3 is the number of clusters
     show(res2);
 
     return 0;
 }
 
-ThStruct methodByThresholding(Mat src)
+ThStruct thresholdMethod(Mat src)
 {
 
     cvtColor(src, src, COLOR_BGR2GRAY);
 
-    int thSky = 200;
+    int thSky = 160;
 
-    Mat mask1 = (src <= 130);
+    Mat mask1 = (src <= 140);
     Mat mask2 = (src >= 60);
     Mat maskAsphalt;
     bitwise_and(mask1, mask2, maskAsphalt);
@@ -63,36 +63,48 @@ ThStruct methodByThresholding(Mat src)
 
     ThStruct res;
     src.copyTo(res.r1, maskAsphalt);
-    src.copyTo(res.r2, maskSky);
-    src.copyTo(res.r3, maskRest);
+    src.copyTo(res.r3, maskSky);
+    src.copyTo(res.r2, maskRest);
 
     return res;
 }
 
-ThStruct methodByKMeansClustering(int k, Mat src)
+ThStruct kmeansMethod(int k, Mat src)
 {
-    TermCriteria criteria(TermCriteria::EPS + TermCriteria::COUNT, 10, 1.0);
-    Mat1f centers;
-    Mat labels;
-    src.convertTo(src, CV_32F);
-    kmeans(src, k, labels, criteria, 3, KMEANS_PP_CENTERS, centers);
+    vector<int> labels;
+    Mat1f colors;
+    int attempts = 5;
+    TermCriteria criteria = TermCriteria(TermCriteria::EPS + TermCriteria::COUNT, 10, 1.);
 
-    labels = labels.reshape(3, src.rows);
-    labels.convertTo(labels, CV_8U);
+    Mat input = src.reshape(1, src.rows * src.cols);
+    input.convertTo(input, CV_32F);
 
-    Mat maskAsphalt = (labels == 0);
-    Mat maskSky = (labels == 1);
-    Mat maskRest = (labels == 2);
+    kmeans(input, k, labels, criteria, attempts, KMEANS_PP_CENTERS, colors);
 
-    // reshape masks to have same size as src
-    maskAsphalt = maskAsphalt.reshape(src.rows, src.cols);
-    maskSky = maskSky.reshape(src.rows, src.cols);
-    maskRest = maskRest.reshape(src.rows, src.cols);
+    Mat maskAsphalt = Mat::zeros(src.size(), CV_8U);
+    Mat maskSky = Mat::zeros(src.size(), CV_8U);
+    Mat maskElse = Mat::zeros(src.size(), CV_8U);
+
+    for (int i = 0; i < src.rows * src.cols; i++)
+    {
+        if (labels[i] == 0)
+        {
+            maskAsphalt.at<uchar>(i / src.cols, i % src.cols) = 255;
+        }
+        else if (labels[i] == 1)
+        {
+            maskSky.at<uchar>(i / src.cols, i % src.cols) = 255;
+        }
+        else if (labels[i] == 2)
+        {
+            maskElse.at<uchar>(i / src.cols, i % src.cols) = 255;
+        }
+    }
 
     ThStruct res;
     src.copyTo(res.r1, maskAsphalt);
     src.copyTo(res.r2, maskSky);
-    src.copyTo(res.r3, maskRest);
+    src.copyTo(res.r3, maskElse);
 
     return res;
 }
@@ -102,11 +114,11 @@ void show(ThStruct res)
     namedWindow("Asphalt", WINDOW_KEEPRATIO);
     imshow("Asphalt", res.r1);
 
-    namedWindow("Sky", WINDOW_KEEPRATIO);
-    imshow("Sky", res.r2);
-
     namedWindow("Else", WINDOW_KEEPRATIO);
-    imshow("Else", res.r3);
+    imshow("Else", res.r2);
+
+    namedWindow("Sky", WINDOW_KEEPRATIO);
+    imshow("Sky", res.r3);
 
     waitKey(0);
 }
