@@ -111,44 +111,88 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named Lab5
+# Target rules for targets named Task3
 
 # Build rule for target.
-Lab5: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 Lab5
-.PHONY : Lab5
+Task3: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 Task3
+.PHONY : Task3
 
 # fast build rule for target.
-Lab5/fast:
-	$(MAKE) -f CMakeFiles/Lab5.dir/build.make CMakeFiles/Lab5.dir/build
-.PHONY : Lab5/fast
+Task3/fast:
+	$(MAKE) -f CMakeFiles/Task3.dir/build.make CMakeFiles/Task3.dir/build
+.PHONY : Task3/fast
 
-task1.o: task1.cpp.o
+#=============================================================================
+# Target rules for targets named Task1
 
-.PHONY : task1.o
+# Build rule for target.
+Task1: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 Task1
+.PHONY : Task1
+
+# fast build rule for target.
+Task1/fast:
+	$(MAKE) -f CMakeFiles/Task1.dir/build.make CMakeFiles/Task1.dir/build
+.PHONY : Task1/fast
+
+#=============================================================================
+# Target rules for targets named Task2
+
+# Build rule for target.
+Task2: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 Task2
+.PHONY : Task2
+
+# fast build rule for target.
+Task2/fast:
+	$(MAKE) -f CMakeFiles/Task2.dir/build.make CMakeFiles/Task2.dir/build
+.PHONY : Task2/fast
 
 # target to build an object file
-task1.cpp.o:
-	$(MAKE) -f CMakeFiles/Lab5.dir/build.make CMakeFiles/Lab5.dir/task1.cpp.o
-.PHONY : task1.cpp.o
-
-task1.i: task1.cpp.i
-
-.PHONY : task1.i
+task1.o:
+	$(MAKE) -f CMakeFiles/Task1.dir/build.make CMakeFiles/Task1.dir/task1.o
+.PHONY : task1.o
 
 # target to preprocess a source file
-task1.cpp.i:
-	$(MAKE) -f CMakeFiles/Lab5.dir/build.make CMakeFiles/Lab5.dir/task1.cpp.i
-.PHONY : task1.cpp.i
-
-task1.s: task1.cpp.s
-
-.PHONY : task1.s
+task1.i:
+	$(MAKE) -f CMakeFiles/Task1.dir/build.make CMakeFiles/Task1.dir/task1.i
+.PHONY : task1.i
 
 # target to generate assembly for a file
-task1.cpp.s:
-	$(MAKE) -f CMakeFiles/Lab5.dir/build.make CMakeFiles/Lab5.dir/task1.cpp.s
-.PHONY : task1.cpp.s
+task1.s:
+	$(MAKE) -f CMakeFiles/Task1.dir/build.make CMakeFiles/Task1.dir/task1.s
+.PHONY : task1.s
+
+# target to build an object file
+task2.o:
+	$(MAKE) -f CMakeFiles/Task2.dir/build.make CMakeFiles/Task2.dir/task2.o
+.PHONY : task2.o
+
+# target to preprocess a source file
+task2.i:
+	$(MAKE) -f CMakeFiles/Task2.dir/build.make CMakeFiles/Task2.dir/task2.i
+.PHONY : task2.i
+
+# target to generate assembly for a file
+task2.s:
+	$(MAKE) -f CMakeFiles/Task2.dir/build.make CMakeFiles/Task2.dir/task2.s
+.PHONY : task2.s
+
+# target to build an object file
+task3.o:
+	$(MAKE) -f CMakeFiles/Task3.dir/build.make CMakeFiles/Task3.dir/task3.o
+.PHONY : task3.o
+
+# target to preprocess a source file
+task3.i:
+	$(MAKE) -f CMakeFiles/Task3.dir/build.make CMakeFiles/Task3.dir/task3.i
+.PHONY : task3.i
+
+# target to generate assembly for a file
+task3.s:
+	$(MAKE) -f CMakeFiles/Task3.dir/build.make CMakeFiles/Task3.dir/task3.s
+.PHONY : task3.s
 
 # Help Target
 help:
@@ -157,11 +201,19 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... rebuild_cache"
-	@echo "... Lab5"
 	@echo "... edit_cache"
+	@echo "... Task3"
+	@echo "... Task1"
+	@echo "... Task2"
 	@echo "... task1.o"
 	@echo "... task1.i"
 	@echo "... task1.s"
+	@echo "... task2.o"
+	@echo "... task2.i"
+	@echo "... task2.s"
+	@echo "... task3.o"
+	@echo "... task3.i"
+	@echo "... task3.s"
 .PHONY : help
 
 

@@ -1,17 +1,7 @@
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
 #include <iostream>
-
-enum Method
-{
-    THRESH_Method,
-    INRANGE_Method
-};
-struct Result
-{
-    cv::Mat morph;
-    cv::Mat kernel;
-};
+#include "utils.h" // definies struct to save Results and enum for methods to apply
 
 Result regionGrowingMethod(cv::Mat morphImg, cv::Mat blurImg, int minTh, int maxTh, Method m);
 

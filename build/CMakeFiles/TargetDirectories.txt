@@ -1,3 +1,5 @@
 /home/nicola/opencv/Lab5/build/CMakeFiles/rebuild_cache.dir
-/home/nicola/opencv/Lab5/build/CMakeFiles/Lab5.dir
 /home/nicola/opencv/Lab5/build/CMakeFiles/edit_cache.dir
+/home/nicola/opencv/Lab5/build/CMakeFiles/Task3.dir
+/home/nicola/opencv/Lab5/build/CMakeFiles/Task1.dir
+/home/nicola/opencv/Lab5/build/CMakeFiles/Task2.dir

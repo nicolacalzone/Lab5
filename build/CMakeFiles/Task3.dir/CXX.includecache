@@ -6,18 +6,12 @@
 
 #IncludeRegexTransform: 
 
-/home/nicola/opencv/Lab5/task1.cpp
+/home/nicola/opencv/Lab5/task3.cpp
 opencv2/highgui.hpp
 -
 opencv2/imgproc.hpp
 -
 iostream
--
-utils.h
-/home/nicola/opencv/Lab5/utils.h
-
-/home/nicola/opencv/Lab5/utils.h
-opencv2/core.hpp
 -
 
 /usr/local/include/opencv4/opencv2/./imgproc/segmentation.hpp
