@@ -52,10 +52,10 @@ ThStruct thresholdMethod(Mat src)
 
     cvtColor(src, src, COLOR_BGR2GRAY);
 
-    int thSky = 160;
+    int thSky = 160; // best th for sky
 
-    Mat mask1 = (src <= 140);
-    Mat mask2 = (src >= 60);
+    Mat mask1 = (src <= 140); // best th
+    Mat mask2 = (src >= 60);  //       for asphalt
     Mat maskAsphalt;
     bitwise_and(mask1, mask2, maskAsphalt);
     Mat maskSky = (src >= thSky);

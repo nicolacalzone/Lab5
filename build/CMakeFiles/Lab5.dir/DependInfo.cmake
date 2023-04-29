@@ -4,7 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/nicola/opencv/Lab5/task2.cpp" "/home/nicola/opencv/Lab5/build/CMakeFiles/Lab5.dir/task2.cpp.o"
+  "/home/nicola/opencv/Lab5/task1.cpp" "/home/nicola/opencv/Lab5/build/CMakeFiles/Lab5.dir/task1.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

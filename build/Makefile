@@ -123,32 +123,32 @@ Lab5/fast:
 	$(MAKE) -f CMakeFiles/Lab5.dir/build.make CMakeFiles/Lab5.dir/build
 .PHONY : Lab5/fast
 
-task2.o: task2.cpp.o
+task1.o: task1.cpp.o
 
-.PHONY : task2.o
+.PHONY : task1.o
 
 # target to build an object file
-task2.cpp.o:
-	$(MAKE) -f CMakeFiles/Lab5.dir/build.make CMakeFiles/Lab5.dir/task2.cpp.o
-.PHONY : task2.cpp.o
+task1.cpp.o:
+	$(MAKE) -f CMakeFiles/Lab5.dir/build.make CMakeFiles/Lab5.dir/task1.cpp.o
+.PHONY : task1.cpp.o
 
-task2.i: task2.cpp.i
+task1.i: task1.cpp.i
 
-.PHONY : task2.i
+.PHONY : task1.i
 
 # target to preprocess a source file
-task2.cpp.i:
-	$(MAKE) -f CMakeFiles/Lab5.dir/build.make CMakeFiles/Lab5.dir/task2.cpp.i
-.PHONY : task2.cpp.i
+task1.cpp.i:
+	$(MAKE) -f CMakeFiles/Lab5.dir/build.make CMakeFiles/Lab5.dir/task1.cpp.i
+.PHONY : task1.cpp.i
 
-task2.s: task2.cpp.s
+task1.s: task1.cpp.s
 
-.PHONY : task2.s
+.PHONY : task1.s
 
 # target to generate assembly for a file
-task2.cpp.s:
-	$(MAKE) -f CMakeFiles/Lab5.dir/build.make CMakeFiles/Lab5.dir/task2.cpp.s
-.PHONY : task2.cpp.s
+task1.cpp.s:
+	$(MAKE) -f CMakeFiles/Lab5.dir/build.make CMakeFiles/Lab5.dir/task1.cpp.s
+.PHONY : task1.cpp.s
 
 # Help Target
 help:
@@ -159,9 +159,9 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... Lab5"
 	@echo "... edit_cache"
-	@echo "... task2.o"
-	@echo "... task2.i"
-	@echo "... task2.s"
+	@echo "... task1.o"
+	@echo "... task1.i"
+	@echo "... task1.s"
 .PHONY : help
 
 

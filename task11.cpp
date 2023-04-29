@@ -5,10 +5,6 @@
 using namespace cv;
 using namespace std;
 
-Mat regionGrowingMethod(Mat morphImg, Mat blurImg);
-Mat watershedMethod(Mat wsImg, Mat blurImg);
-Mat clusteringMethod(Mat clustImg, Mat blurImg);
-
 int main(int argc, char **argv)
 {
 
@@ -17,7 +13,7 @@ int main(int argc, char **argv)
 
     string str1 = "../Asphalt-1.png";
     string str2 = "../Asphalt-2.png";
-    string str3 = "../Asphalt-3.png"; // this picture needs more iterations of gaussian blur filter
+    string str3 = "../Asphalt-3.png";
     vector<string> strings = {str1, str2, str3};
 
     src1 = imread(str1, IMREAD_COLOR);
@@ -40,27 +36,29 @@ int main(int argc, char **argv)
 
     // METODO 1 ---- REGION GROWING
     Mat morphImg1, morphImg2, morphImg3;
-    morphImg1 = regionGrowingMethod(morphImg1, blur1Img);
-    morphImg2 = regionGrowingMethod(morphImg2, blur2Img);
-    morphImg3 = regionGrowingMethod(morphImg3, blur3Img);
 
     Mat thImg1, thImg2, thImg3;
-    threshold(blur1Img, thImg1, 80, 255, THRESH_BINARY); // the closest to black is the minTrhreshold,
+    threshold(blur1Img, thImg1, 50, 255, THRESH_BINARY); // the closest to black is the minTrhreshold,
                                                          // the better the result
     Mat kernel = getStructuringElement(MORPH_RECT, Size(3, 3));
     morphologyEx(thImg1, morphImg1, MORPH_CLOSE, kernel); // change the MORPH value and the pic changes!
 
-    threshold(blur2Img, thImg2, 80, 255, THRESH_BINARY);
-    Mat kernel = getStructuringElement(MORPH_RECT, Size(3, 3));
+    threshold(blur2Img, thImg2, 60, 255, THRESH_BINARY);
+    Mat kernel1 = getStructuringElement(MORPH_RECT, Size(3, 3));
     morphologyEx(thImg2, morphImg2, MORPH_CLOSE, kernel);
 
-    threshold(blur3Img, thImg3, 80, 255, THRESH_BINARY);
-    Mat kernel = getStructuringElement(MORPH_RECT, Size(3, 3));
+    threshold(blur3Img, thImg3, 50, 255, THRESH_BINARY);
+    Mat kernel2 = getStructuringElement(MORPH_RECT, Size(3, 3));
     morphologyEx(thImg3, morphImg3, MORPH_CLOSE, kernel);
 
-    imshow("res Regions", morphImg1);
-    imshow("res Regions", morphImg2);
-    imshow("res Regions", morphImg3);
+    namedWindow("1", WINDOW_KEEPRATIO);
+    imshow("1", morphImg1);
+
+    namedWindow("2", WINDOW_KEEPRATIO);
+    imshow("2", morphImg2);
+
+    namedWindow("3", WINDOW_KEEPRATIO);
+    imshow("3", morphImg3);
 
     waitKey(0);
     return 0;

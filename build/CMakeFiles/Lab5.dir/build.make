@@ -57,38 +57,38 @@ include CMakeFiles/Lab5.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/Lab5.dir/flags.make
 
-CMakeFiles/Lab5.dir/task2.cpp.o: CMakeFiles/Lab5.dir/flags.make
-CMakeFiles/Lab5.dir/task2.cpp.o: ../task2.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/nicola/opencv/Lab5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/Lab5.dir/task2.cpp.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/Lab5.dir/task2.cpp.o -c /home/nicola/opencv/Lab5/task2.cpp
+CMakeFiles/Lab5.dir/task1.cpp.o: CMakeFiles/Lab5.dir/flags.make
+CMakeFiles/Lab5.dir/task1.cpp.o: ../task1.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/nicola/opencv/Lab5/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/Lab5.dir/task1.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/Lab5.dir/task1.cpp.o -c /home/nicola/opencv/Lab5/task1.cpp
 
-CMakeFiles/Lab5.dir/task2.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Lab5.dir/task2.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/nicola/opencv/Lab5/task2.cpp > CMakeFiles/Lab5.dir/task2.cpp.i
+CMakeFiles/Lab5.dir/task1.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Lab5.dir/task1.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/nicola/opencv/Lab5/task1.cpp > CMakeFiles/Lab5.dir/task1.cpp.i
 
-CMakeFiles/Lab5.dir/task2.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Lab5.dir/task2.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/nicola/opencv/Lab5/task2.cpp -o CMakeFiles/Lab5.dir/task2.cpp.s
+CMakeFiles/Lab5.dir/task1.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Lab5.dir/task1.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/nicola/opencv/Lab5/task1.cpp -o CMakeFiles/Lab5.dir/task1.cpp.s
 
-CMakeFiles/Lab5.dir/task2.cpp.o.requires:
+CMakeFiles/Lab5.dir/task1.cpp.o.requires:
 
-.PHONY : CMakeFiles/Lab5.dir/task2.cpp.o.requires
+.PHONY : CMakeFiles/Lab5.dir/task1.cpp.o.requires
 
-CMakeFiles/Lab5.dir/task2.cpp.o.provides: CMakeFiles/Lab5.dir/task2.cpp.o.requires
-	$(MAKE) -f CMakeFiles/Lab5.dir/build.make CMakeFiles/Lab5.dir/task2.cpp.o.provides.build
-.PHONY : CMakeFiles/Lab5.dir/task2.cpp.o.provides
+CMakeFiles/Lab5.dir/task1.cpp.o.provides: CMakeFiles/Lab5.dir/task1.cpp.o.requires
+	$(MAKE) -f CMakeFiles/Lab5.dir/build.make CMakeFiles/Lab5.dir/task1.cpp.o.provides.build
+.PHONY : CMakeFiles/Lab5.dir/task1.cpp.o.provides
 
-CMakeFiles/Lab5.dir/task2.cpp.o.provides.build: CMakeFiles/Lab5.dir/task2.cpp.o
+CMakeFiles/Lab5.dir/task1.cpp.o.provides.build: CMakeFiles/Lab5.dir/task1.cpp.o
 
 
 # Object files for target Lab5
 Lab5_OBJECTS = \
-"CMakeFiles/Lab5.dir/task2.cpp.o"
+"CMakeFiles/Lab5.dir/task1.cpp.o"
 
 # External object files for target Lab5
 Lab5_EXTERNAL_OBJECTS =
 
-Lab5: CMakeFiles/Lab5.dir/task2.cpp.o
+Lab5: CMakeFiles/Lab5.dir/task1.cpp.o
 Lab5: CMakeFiles/Lab5.dir/build.make
 Lab5: /usr/local/lib/libopencv_gapi.so.4.7.0
 Lab5: /usr/local/lib/libopencv_highgui.so.4.7.0
@@ -114,7 +114,7 @@ CMakeFiles/Lab5.dir/build: Lab5
 
 .PHONY : CMakeFiles/Lab5.dir/build
 
-CMakeFiles/Lab5.dir/requires: CMakeFiles/Lab5.dir/task2.cpp.o.requires
+CMakeFiles/Lab5.dir/requires: CMakeFiles/Lab5.dir/task1.cpp.o.requires
 
 .PHONY : CMakeFiles/Lab5.dir/requires
 

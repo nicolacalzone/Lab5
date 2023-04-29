@@ -2,109 +2,125 @@
 #include <opencv2/imgproc.hpp>
 #include <iostream>
 
-using namespace cv;
-using namespace std;
-
+enum Method
+{
+    THRESH_Method,
+    INRANGE_Method
+};
 struct Result
 {
-    Mat morph;
-    Mat kernel;
+    cv::Mat morph;
+    cv::Mat kernel;
 };
 
-Result regionGrowingMethod(Mat morphImg, Mat blurImg, int minTh);
-Mat watershedMethod(Mat wsImg, Mat blurImg);
-Mat clusteringMethod(Mat clustImg, Mat blurImg);
+Result regionGrowingMethod(cv::Mat morphImg, cv::Mat blurImg, int minTh, int maxTh, Method m);
 
 int main(int argc, char **argv)
 {
+    cv::Mat src;
+    cv::Mat srcGray;
+    cv::Mat blurImg;
 
-    Mat src1;
-    Mat srcGray;
-    Mat blurImg;
+    std::vector<std::string> strings = {"../Asphalt-1.png", "../Asphalt-2.png", "../Asphalt-3.png"};
 
-    string str1 = "../Asphalt-1.png";
-    string str2 = "../Asphalt-2.png";
-    string str3 = "../Asphalt-3.png"; // this picture needs more iterations of gaussian blur filter
-    vector<string> strings = {str1, str2, str3};
-
-    for (string s : strings)
+    for (std::string s : strings)
     {
-        src1 = imread(s, IMREAD_COLOR);
-        if (src1.empty())
+        src = cv::imread(s, cv::IMREAD_COLOR);
+
+        if (src.empty())
         {
-            cout << "Cannot read image " << s << endl;
+            std::cout << "Cannot read image " << s << std::endl;
             return -1;
         }
 
-        cvtColor(src1, srcGray, COLOR_BGR2GRAY);
+        cv::cvtColor(src, srcGray, cv::COLOR_BGR2GRAY);
 
-        if (s == str1)
+        if (s == strings[0])
         {
-            GaussianBlur(srcGray, blurImg, Size(5, 5), 0);
+            cv::GaussianBlur(srcGray, blurImg, cv::Size(3, 3), 0);
 
             // METODO 1 ---- REGION GROWING
             Result resGrowing;
-            resGrowing = regionGrowingMethod(resGrowing.morph, blurImg, 100);
-            namedWindow("res Regions", WINDOW_KEEPRATIO);
-            imshow("res Regions", resGrowing.morph);
+            int minThr = 70;
+            int maxThr = 255;
+            resGrowing = regionGrowingMethod(resGrowing.morph, blurImg, minThr, maxThr, THRESH_Method);
+
+            // erode(resGrowing.morph, resGrowing.morph, resGrowing.kernel, Point(-1, 1), 2);
+
+            cv::namedWindow("res Regions", cv::WINDOW_KEEPRATIO);
+            cv::imshow("res Regions", resGrowing.morph);
+
             resGrowing.morph.release();
+            resGrowing.kernel.release();
+            blurImg.release();
         }
-        else if (s == str2)
+        else if (s == strings[1])
         {
 
-            // GaussianBlur(srcGray, blurImg, Size(3, 3), 0);
-            medianBlur(srcGray,
-                       blurImg,
-                       3);
-
-            // GaussianBlur(blurImg, blurImg, Size(3, 3), 0);
+            cv::medianBlur(srcGray, blurImg, 5);
 
             // METODO 1 ---- REGION GROWING
             Result resGrowing;
-            resGrowing = regionGrowingMethod(resGrowing.morph, blurImg, 90);
-            namedWindow("res Regions", WINDOW_KEEPRATIO);
+            int minThr = 65;
+            int maxThr = 255;
 
-            dilate(resGrowing.morph, resGrowing.morph, resGrowing.kernel, Point(-1, 1), 1);
+            resGrowing = regionGrowingMethod(resGrowing.morph, blurImg, minThr, maxThr, THRESH_Method);
 
-            imshow("res Regions", resGrowing.morph);
+            // cv::erode(resGrowing.morph, resGrowing.morph, resGrowing.kernel, cv::Point(-1, 1), 1);
+
+            cv::namedWindow("res Regions", cv::WINDOW_KEEPRATIO);
+            cv::imshow("res Regions", resGrowing.morph);
+
             resGrowing.morph.release();
+            resGrowing.kernel.release();
+            blurImg.release();
         }
-        else if (s == str3)
+
+        else if (s == strings[2])
         {
-            GaussianBlur(srcGray, blurImg, Size(3, 3), 0);
+            cv::GaussianBlur(srcGray, blurImg, cv::Size(7, 7), 0);
 
             // METODO 1 ---- REGION GROWING
             Result resGrowing;
-            resGrowing = regionGrowingMethod(resGrowing.morph, blurImg, 60);
-            namedWindow("res Regions", WINDOW_KEEPRATIO);
-            imshow("res Regions", resGrowing.morph);
+            int minThr = 45;
+            int maxThr = 150;
+            resGrowing = regionGrowingMethod(resGrowing.morph, blurImg, minThr, maxThr, INRANGE_Method); // best minTH around 45
+
+            // erode(resGrowing.morph, resGrowing.morph, resGrowing.kernel, Point(-1, 1), 2);
+
+            cv::namedWindow("res Regions", cv::WINDOW_KEEPRATIO);
+            cv::imshow("res Regions", resGrowing.morph);
+
             resGrowing.morph.release();
+            resGrowing.kernel.release();
+            blurImg.release();
         }
 
-        waitKey(0);
+        cv::waitKey(0);
     }
 
     return 0;
 }
 
-Result regionGrowingMethod(Mat morphImg, Mat blurImg, int minTh)
+Result regionGrowingMethod(cv::Mat morphImg, cv::Mat blurImg, int minTh, int maxTh, Method m)
 {
     Result res;
-    Mat thImg;
-    threshold(blurImg, thImg, minTh, 255, THRESH_BINARY); // the closest to black is the minTrhreshold,
-                                                          // the better the result
-    Mat kernel = getStructuringElement(MORPH_RECT, Size(5, 5));
-    morphologyEx(thImg, morphImg, MORPH_CLOSE, kernel); // change the MORPH value and the pic changes!
+    cv::Mat thImg;
 
-    res.morph = morphImg.clone();
-    res.kernel = kernel.clone();
+    switch (m)
+    {
+    case THRESH_Method:
+        threshold(blurImg, thImg, minTh, maxTh, cv::THRESH_BINARY);
+        break;
+    case INRANGE_Method:
+        inRange(blurImg, cv::Scalar(minTh), cv::Scalar(maxTh), thImg);
+        break;
+    }
 
+    cv::Mat kernel = cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(3, 3));
+    morphologyEx(thImg, morphImg, cv::MORPH_CLOSE, kernel); // change the MORPH value and the pic changes! 3 == Morph_Close
+
+    res.morph = morphImg;
+    res.kernel = kernel;
     return res;
-}
-
-Mat watershedMethod(Mat wsImg, Mat blurImg)
-{
-}
-Mat clusteringMethod(Mat clustImg, Mat blurImg)
-{
 }

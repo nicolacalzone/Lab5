@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/home/nicola/opencv/Lab5/task2.cpp
+/home/nicola/opencv/Lab5/task1.cpp
 opencv2/highgui.hpp
 -
 opencv2/imgproc.hpp
