@@ -4,9 +4,11 @@
 
 TO RUN:
 
+mkdir build
+
 cd build
 
 cmake --build .
 
-./Lab5
-
+Then execute one of this commands:
+./Task1 or ./Task2 or ./Task3

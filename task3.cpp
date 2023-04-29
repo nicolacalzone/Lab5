@@ -1,42 +1,19 @@
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
 #include <iostream>
+#include "methods.h"
 
 using namespace cv;
 using namespace std;
 
-Mat kmeansMethod(int k, Mat src)
-{
-    vector<int> labels;
-    Mat1f colors;
-    int attempts = 5;
-    TermCriteria criteria = TermCriteria(TermCriteria::EPS + TermCriteria::COUNT, 10, 1.);
-
-    Mat input = src.reshape(1, src.rows * src.cols);
-    input.convertTo(input, CV_32F);
-
-    kmeans(input, k, labels, criteria, attempts, KMEANS_PP_CENTERS, colors);
-
-    for (unsigned int i = 0; i < src.rows * src.cols; i++)
-    {
-        input.at<float>(i, 0) = colors(labels[i], 0);
-        input.at<float>(i, 1) = colors(labels[i], 1);
-        input.at<float>(i, 2) = colors(labels[i], 2);
-    }
-
-    Mat output = input.reshape(3, src.rows);
-    output.convertTo(output, CV_8U);
-    return output;
-}
-
 int main(int argc, char **argv)
 {
-
-    Mat src, src_gray;
+    Mat src;
 
     string str1 = "../robocup.jpg";
     src = imread(str1, IMREAD_COLOR);
-    if (src.empty())
+
+    if (src.empty() || !src.data)
     {
         cout << "Cannot read image " << src << endl;
         return -1;
@@ -45,7 +22,8 @@ int main(int argc, char **argv)
     Mat blurImg;
     GaussianBlur(src, blurImg, Size(5, 5), 0);
 
-    Mat res = kmeansMethod(6, blurImg);
+    int numClusters = 6;
+    Mat res = kmeansMethod3(numClusters, blurImg);
 
     // if clusters are 5, the ball goes together with the shirts
     // if clusters are 4, ball goes together with shirts but shirts go together with arms / other parts

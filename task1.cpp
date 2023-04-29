@@ -1,9 +1,8 @@
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
 #include <iostream>
-#include "utils.h" // definies struct to save Results and enum for methods to apply
-
-Result regionGrowingMethod(cv::Mat morphImg, cv::Mat blurImg, int minTh, int maxTh, Method m);
+#include "utils.h"   // definies struct to save Results and enum for methods to apply
+#include "methods.h" // defines all the functions for the Lab5
 
 int main(int argc, char **argv)
 {
@@ -17,7 +16,7 @@ int main(int argc, char **argv)
     {
         src = cv::imread(s, cv::IMREAD_COLOR);
 
-        if (src.empty())
+        if (src.empty() || !src.data)
         {
             std::cout << "Cannot read image " << s << std::endl;
             return -1;
@@ -68,11 +67,11 @@ int main(int argc, char **argv)
 
         else if (s == strings[2])
         {
-            cv::GaussianBlur(srcGray, blurImg, cv::Size(7, 7), 0);
+            cv::GaussianBlur(srcGray, blurImg, cv::Size(5, 5), 0);
 
             // METODO 1 ---- REGION GROWING
             Result resGrowing;
-            int minThr = 45;
+            int minThr = 50;
             int maxThr = 150;
             resGrowing = regionGrowingMethod(resGrowing.morph, blurImg, minThr, maxThr, INRANGE_Method); // best minTH around 45
 
@@ -90,27 +89,4 @@ int main(int argc, char **argv)
     }
 
     return 0;
-}
-
-Result regionGrowingMethod(cv::Mat morphImg, cv::Mat blurImg, int minTh, int maxTh, Method m)
-{
-    Result res;
-    cv::Mat thImg;
-
-    switch (m)
-    {
-    case THRESH_Method:
-        threshold(blurImg, thImg, minTh, maxTh, cv::THRESH_BINARY);
-        break;
-    case INRANGE_Method:
-        inRange(blurImg, cv::Scalar(minTh), cv::Scalar(maxTh), thImg);
-        break;
-    }
-
-    cv::Mat kernel = cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(3, 3));
-    morphologyEx(thImg, morphImg, cv::MORPH_CLOSE, kernel); // change the MORPH value and the pic changes! 3 == Morph_Close
-
-    res.morph = morphImg;
-    res.kernel = kernel;
-    return res;
 }
