@@ -67,12 +67,12 @@ int main(int argc, char **argv)
 
         else if (s == strings[2])
         {
-            cv::GaussianBlur(srcGray, blurImg, cv::Size(5, 5), 0);
+            cv::GaussianBlur(srcGray, blurImg, cv::Size(7, 7), 0);
 
             // METODO 1 ---- REGION GROWING
             Result resGrowing;
             int minThr = 50;
-            int maxThr = 150;
+            int maxThr = 190;
             resGrowing = regionGrowingMethod(resGrowing.morph, blurImg, minThr, maxThr, INRANGE_Method); // best minTH around 45
 
             // erode(resGrowing.morph, resGrowing.morph, resGrowing.kernel, Point(-1, 1), 2);
@@ -89,4 +89,27 @@ int main(int argc, char **argv)
     }
 
     return 0;
+}
+
+Result regionGrowingMethod(cv::Mat &morphImg, cv::Mat &blurImg, int minTh, int maxTh, Method m)
+{
+    Result res;
+    cv::Mat thImg;
+
+    switch (m)
+    {
+    case THRESH_Method:
+        threshold(blurImg, thImg, minTh, maxTh, cv::THRESH_BINARY);
+        break;
+    case INRANGE_Method:
+        inRange(blurImg, cv::Scalar(minTh), cv::Scalar(maxTh), thImg);
+        break;
+    }
+
+    cv::Mat kernel = cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(3, 3));
+    cv::morphologyEx(thImg, morphImg, cv::MORPH_CLOSE, kernel); // change the MORPH value and the pic changes! 3 == Morph_Close
+
+    res.morph = morphImg;
+    res.kernel = kernel;
+    return res;
 }

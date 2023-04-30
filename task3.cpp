@@ -3,46 +3,78 @@
 #include <iostream>
 #include "methods.h"
 
-using namespace cv;
-using namespace std;
-
 int main(int argc, char **argv)
 {
-    Mat src;
+    cv::Mat src;
 
-    string str1 = "../robocup.jpg";
-    src = imread(str1, IMREAD_COLOR);
+    std::string str1 = "../robocup.jpg";
+    src = cv::imread(str1, cv::IMREAD_COLOR);
 
     if (src.empty() || !src.data)
     {
-        cout << "Cannot read image " << src << endl;
+        std::cout << "Cannot read image " << src << std::endl;
         return -1;
     }
 
-    Mat blurImg;
-    GaussianBlur(src, blurImg, Size(5, 5), 0);
+    cv::Mat blurImg;
+    cv::GaussianBlur(src, blurImg, cv::Size(5, 5), 0);
 
     int numClusters = 6;
-    Mat res = kmeansMethod3(numClusters, blurImg);
+    cv::Mat res = kmeansMethod3(numClusters, blurImg);
 
     // if clusters are 5, the ball goes together with the shirts
     // if clusters are 4, ball goes together with shirts but shirts go together with arms / other parts
     // if clusters are 3, the ball gets halfly lost in the ground
 
-    namedWindow("Result", WINDOW_KEEPRATIO);
-    imshow("Result", res);
-    waitKey(0);
+    cv::namedWindow("Result", cv::WINDOW_KEEPRATIO);
+    cv::imshow("Result", res);
+    cv::waitKey(0);
 
     // TAKE ONLY THE SHIRTS:
-    Scalar low = Scalar(5, 80, 100); // BGR
-    Scalar high = Scalar(80, 200, 250);
-    inRange(res, low, high, res);
-    namedWindow("Result", WINDOW_KEEPRATIO);
-    imshow("Result", res);
-    waitKey(0);
+    cv::Scalar low = cv::Scalar(5, 80, 100); // BGR
+    cv::Scalar high = cv::Scalar(80, 200, 250);
+    cv::inRange(res, low, high, res);
+    cv::namedWindow("Result", cv::WINDOW_KEEPRATIO);
+    cv::imshow("Result", res);
+    cv::waitKey(0);
 
     // Better doing inRange because you never know where is a cluster stored in the labels... It might be in
     // a certain label once and in another the next time. So this is the only way
 
     return 0;
+}
+
+/*
+    KMEANS METHOD
+
+    @param
+    k       => number of clusters
+    src     => blurred image in the task3
+
+    @result
+    output  => Mat image converted to CV_8U
+
+ */
+cv::Mat kmeansMethod3(int k, cv::Mat &src)
+{
+    std::vector<int> labels;
+    cv::Mat1f centers;
+    int attempts = 5;
+    cv::TermCriteria criteria = cv::TermCriteria(cv::TermCriteria::EPS + cv::TermCriteria::COUNT, 10, 1.);
+
+    cv::Mat input = src.reshape(1, src.rows * src.cols);
+    input.convertTo(input, CV_32F);
+
+    cv::kmeans(input, k, labels, criteria, attempts, cv::KMEANS_PP_CENTERS, centers);
+
+    for (unsigned int i = 0; i < src.rows * src.cols; i++)
+    {
+        input.at<float>(i, 0) = centers(labels[i], 0);
+        input.at<float>(i, 1) = centers(labels[i], 1);
+        input.at<float>(i, 2) = centers(labels[i], 2);
+    }
+
+    cv::Mat output = input.reshape(3, src.rows);
+    output.convertTo(output, CV_8U);
+    return output;
 }

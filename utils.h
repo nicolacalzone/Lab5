@@ -5,8 +5,8 @@
 
 enum Method
 {
-    THRESH_Method,
-    INRANGE_Method
+    THRESH_Method = 0,
+    INRANGE_Method = 1,
 };
 
 struct Result
@@ -15,7 +15,7 @@ struct Result
     cv::Mat kernel;
 };
 
-struct ThStruct
+struct KMeansRes
 {
     cv::Mat r1;
     cv::Mat r2;
